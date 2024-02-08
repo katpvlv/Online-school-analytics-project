@@ -60,5 +60,5 @@ select
     coalesce(closing_reason, NULL) as closing_reason,
     coalesce(status_id, NULL) as status_id
 from attribution
-order by amount desc NULL last, visit_date, utm_source, utm_medium, utm_campaign
+order by amount desc NULLS last, visit_date, utm_source, utm_medium, utm_campaign
 limit 10;
