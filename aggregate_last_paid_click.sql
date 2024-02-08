@@ -83,10 +83,10 @@ marketing_data as (
 )
 select
     a.visit_date,
+    a.visitors_count,
     a.utm_source,
     a.utm_medium,
     a.utm_campaign,
-    a.visitors_count,
     m.total_cost,
     a.leads_count,
     a.purchases_count,
@@ -98,4 +98,5 @@ left join marketing_data as m
         and lower(a.utm_source) = m.utm_source
         and lower(a.utm_medium) = m.utm_medium
         and lower(a.utm_campaign) = m.utm_campaign
-order by 9 desc nulls last, 1, 5 desc, 2, 3, 4;
+order by 9 desc nulls last, 1, 2 desc, 3, 4
+limit 15;
