@@ -1,34 +1,33 @@
-select 
-	count(distinct visitor_id)
+select count(distinct visitor_id)
 from sessions;
 
-select 
-	count(distinct lead_id)
+select count(distinct lead_id)
 from leads;
 
-select 
-	count(case when status_id = 142 then visitor_id end)
+select count(case when status_id = 142 then visitor_id end)
 from leads;
 
-with tab as(
+with tab as (
 	select
-		date(visit_date) as day,
+		date(visit_date) as day_,
 		*
 	from sessions
 ),
-tab2 as(
+
+tab2 as (
 	select 
-		count(visitor_id) over (partition by day, source order by day) as visitors,
-		row_number() over (partition by day, source order by day) as rn,
-		day,
+		count(visitor_id) over (partition by day_, source order by day_) as visitors,
+		row_number() over (partition by day_, source order by day_) as rn,
+		day_,
 		source
 	from tab
 )
+
 select
 	visitors,
-	extract(month from day) as month,
-	extract(week from day) as week,
-	day,
+	extract(month from day_) as month_,
+	extract(week from day_) as week,
+	day_,
 	source 
 from tab2
 where rn = 1
@@ -37,7 +36,7 @@ where rn = 1
 select 
 	date(s.visit_date) as date,
 	extract(week from s.visit_date) as week,
-	extract(month from s.visit_date) as month,
+	extract(month from s.visit_date) as month_,
 	count(distinct l.lead_id) as lead,
 	s.source
 from sessions s 
@@ -73,6 +72,7 @@ with sessions_with_paid_mark as (
         end as is_paid
     from sessions
 ),
+
 visitors_with_leads as (
     select
         s.visitor_id,
@@ -96,11 +96,13 @@ visitors_with_leads as (
             and s.visit_date <= l.created_at
     where s.is_paid = 1
 ),
+
 attribution as (
     select *
     from visitors_with_leads
     where rn = 1
 ),
+
 aggregated_data as (
     select
         utm_source,
@@ -119,6 +121,7 @@ aggregated_data as (
     from attribution
     group by 1, 2, 3, 4, 5
 ),
+
 marketing_data as (
     select
         date(campaign_date) as visit_date,
@@ -138,6 +141,7 @@ marketing_data as (
     from vk_ads
     group by 1, 2, 3, 4
 )
+
 select
     a.visit_date,
     a.utm_source,
