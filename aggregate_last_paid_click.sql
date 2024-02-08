@@ -17,6 +17,7 @@ with sessions_with_paid_mark as (
         end as is_paid
     from sessions
 ),
+
 visitors_with_leads as (
     select
         s.visitor_id,
@@ -40,11 +41,13 @@ visitors_with_leads as (
             and s.visit_date <= l.created_at
     where s.is_paid = 1
 ),
+
 attribution as (
     select *
     from visitors_with_leads
     where rn = 1
 ),
+
 aggregated_data as (
     select
         utm_source,
@@ -62,6 +65,7 @@ aggregated_data as (
     from attribution
     group by 1, 2, 3, 4
 ),
+
 marketing_data as (
     select
         date(campaign_date) as visit_date,
@@ -81,6 +85,7 @@ marketing_data as (
     from vk_ads
     group by 1, 2, 3, 4
 )
+
 select
     a.visit_date,
     a.visitors_count,
