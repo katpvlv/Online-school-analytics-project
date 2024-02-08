@@ -49,16 +49,16 @@ attribution as (
 )
 
 select
-	visitor_id,
-	visit_date,
-	utm_source,
-	utm_medium,
-	utm_campaign,
-	coalesce(lead_id, NULL) as lead_id,
-	coalesce(created_at, NULL) as created_at,
-	coalesce(amount, NULL) as amount,
-	coalesce(closing_reason, NULL) as closing_reason,
-	coalesce(status_id, NULL) as status_id
+    visitor_id,
+    visit_date,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    coalesce(lead_id, NULL) as lead_id,
+    coalesce(created_at, NULL) as created_at,
+    coalesce(amount, NULL) as amount,
+    coalesce(closing_reason, NULL) as closing_reason,
+    coalesce(status_id, NULL) as status_id
 from attribution
 order by amount desc NULL last, visit_date, utm_source, utm_medium, utm_campaign
 limit 10;
