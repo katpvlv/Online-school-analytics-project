@@ -19,7 +19,7 @@ tab2 as (
         day_,
         source,
         count(visitor_id) over (partition by day_, source order by day_)
-            as visitors,
+        as visitors,
         row_number() over (partition by day_, source order by day_) as rn
     from tab
 )
