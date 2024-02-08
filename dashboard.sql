@@ -9,42 +9,43 @@ from leads;
 
 with tab as (
     select
-        date(visit_date) as day_,
-        *
+        *,
+        date(visit_date) as day_
     from sessions
 ),
 
 tab2 as (
     select
-        count(visitor_id) over (partition by day_, source order by day_) as visitors,
-        row_number() over (partition by day_, source order by day_) as rn,
         day_,
-        source
+        source,
+        count(visitor_id) over (partition by day_, source order by day_)
+            as visitors,
+        row_number() over (partition by day_, source order by day_) as rn
     from tab
 )
 
 select
     visitors,
-    extract(month from day_) as month_,
-    extract(week from day_) as week_,
     day_,
-    source 
+    source,
+    extract(month from day_) as month_,
+    extract(week from day_) as week_
 from tab2
 where rn = 1;
 
 select
+    s.source,
     date(s.visit_date) as date_,
     extract(week from s.visit_date) as week_,
     extract(month from s.visit_date) as month_,
-    count(distinct l.lead_id) as lead,
-    s.source
-from sessions s
-left join leads l
+    count(distinct l.lead_id) as lead
+from sessions as s
+left join leads as l
     on s.visitor_id = l.visitor_id
-group by 1, 2, 3, 5;
+group by 2, 3, 4, 1;
 
 select
-    date(created_at) as date,
+    date(created_at) as date_,
     count(case when status_id = 142 then visitor_id end) as purchase
 from leads
 group by 1
